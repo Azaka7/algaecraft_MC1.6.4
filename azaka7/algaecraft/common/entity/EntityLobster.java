@@ -300,7 +300,7 @@ public class EntityLobster extends EntityWaterMob
         if (super.getCanSpawnHere())
         {
             EntityPlayer entityplayer = this.worldObj.getClosestPlayerToEntity(this, 5.0D);
-            return entityplayer == null;
+            return entityplayer == null; //&& this.worldObj.getBlockMaterial((int)Math.floor(this.posX), (int)Math.floor(this.posY-1), (int)Math.floor(this.posZ)).isSolid();
         }
         else
         {

@@ -63,7 +63,7 @@ public class ClientProxy extends CommonProxy {
 					System.out.println("[AlgaeCraft] Registered with Fog Clarity API.");
 				}
 				else{
-					System.out.println("[AlgaeCraft] Ignoring.");
+					System.out.println("[AlgaeCraft] Ignoring FogClarityAPI.");
 				}
 			}
 			else{

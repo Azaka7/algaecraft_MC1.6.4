@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumArmorMaterial;
@@ -28,12 +29,16 @@ import net.minecraft.src.BaseMod;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.BiomeGenOcean;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
 import net.minecraft.world.gen.ChunkProviderHell;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import azaka7.algaecraft.client.ClientProxy;
 import azaka7.algaecraft.common.block.*;
@@ -41,6 +46,7 @@ import azaka7.algaecraft.common.entity.EntityFish;
 import azaka7.algaecraft.common.entity.EntityLobster;
 import azaka7.algaecraft.common.entity.EntitySquidMeaty;
 import azaka7.algaecraft.common.item.*;
+import azaka7.algaecraft.common.world.BiomeGenOceanAC;
 import azaka7.algaecraft.common.world.BiomeGenOceanDeep;
 import azaka7.algaecraft.common.world.WorldGenFlowers;
 import azaka7.algaecraft.common.world.WorldGenReef;
@@ -191,6 +197,10 @@ public class AlgaeCraftMain implements ICraftingHandler, IWorldGenerator {
 	
 	public static boolean specialCoralRender;
 	
+	private static final Class<?>[][] paramTypes = new Class[][] {{EnumCreatureType.class, Class.class, int.class, Material.class, boolean.class, boolean.class}};
+	public static final EnumCreatureType ambientWater = EnumHelper.addEnum(paramTypes, EnumCreatureType.class, "ambientWaterFish", EntityWaterMob.class, 256, Material.water, true, false);
+	public static BiomeGenBase oceanAC;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event){
 		//File file = new File(event.getModConfigurationDirectory(),"shipLargeFloat.txt");
@@ -322,9 +332,13 @@ public class AlgaeCraftMain implements ICraftingHandler, IWorldGenerator {
 		
 		itemSponge = new ItemSponge(itemSpongeID, "").setUnlocalizedName("drySponge").setCreativeTab(modTab);
 		LanguageRegistry.addName(itemSponge, "Sponge Item");
+
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.WATER, new ItemStack(itemSponge, 1, 1), new ItemStack(itemSponge, 1, 0));
 		
 		itemSpongeRed = new ItemSponge(itemSpongeRedID, "Red").setUnlocalizedName("drySpongeRed").setCreativeTab(modTab);
 		LanguageRegistry.addName(itemSpongeRed, "Red Sponge Item");
+
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.WATER, new ItemStack(itemSpongeRed, 1, 1), new ItemStack(itemSpongeRed, 1, 0));
 		
 		itemSeaweedCooked = new ItemFoodBasic(itemSeaweedCookedID, "seaweedCooked", 3, 0.3F, false).setUnlocalizedName("itemSeaweedCooked");
 		LanguageRegistry.addName(itemSeaweedCooked, "Crispy Seaweed");
@@ -737,24 +751,21 @@ public class AlgaeCraftMain implements ICraftingHandler, IWorldGenerator {
 		//ModLoader.addEntityTracker(this, EntityLobster.class, 126, 56, 5, true);
 		
 		EntityRegistry.registerGlobalEntityID(EntityFish.class, "fishyfish", entityFishID, 0xCCCCFF, 0x8C8C8F);
-
-		//EntityRegistry.addSpawn(EntitySquidMeaty.class, 10, 4, 10, EnumCreatureType.waterCreature);
-		EntityRegistry.addSpawn(EntityFish.class, 12, 8, 16, EnumCreatureType.waterCreature, new BiomeGenBase[]{
-			BiomeGenBase.ocean,
+		
+		EntityRegistry.addSpawn(EntityFish.class, 30, 8, 16, EnumCreatureType.waterCreature, new BiomeGenBase[]{
+			//BiomeGenBase.ocean,
 			BiomeGenBase.beach,
 			BiomeGenBase.frozenOcean,
 			BiomeGenBase.swampland,
 			BiomeGenBase.river,
 			BiomeGenBase.mushroomIslandShore});
-		if(this.generateDeepOcean){
-			EntityRegistry.addSpawn(EntityFish.class, 12, 8, 16, EnumCreatureType.waterCreature, new BiomeGenBase[]{
-				this.deepOcean});
-		}
+		
+		
 		//ModLoader.addEntityTracker(this, EntityFish.class, 125, 56, 5, true);
 		
 		//EntityRegistry.addSpawn(EntityLobster.class, 10, 4, 4, EnumCreatureType.waterCreature);
 		//EntityRegistry.addSpawn(EntityLobster.class, 10, 4, 4, EnumCreatureType.waterCreature, waters);
-		EntityRegistry.addSpawn(EntityLobster.class, 20, 4, 10, EnumCreatureType.waterCreature, new BiomeGenBase[]{BiomeGenBase.ocean,BiomeGenBase.beach});
+		EntityRegistry.addSpawn(EntityLobster.class, 10, 4, 10, EnumCreatureType.waterCreature, new BiomeGenBase[]{BiomeGenBase.ocean,BiomeGenBase.beach});
 		LanguageRegistry.instance().addStringLocalization("entity.lobster.name", "Lobster");
 		LanguageRegistry.instance().addStringLocalization("entity.fishyfish.name", "Fish");
 		
@@ -832,6 +843,19 @@ public class AlgaeCraftMain implements ICraftingHandler, IWorldGenerator {
 	}
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
+		
+		oceanAC  = new BiomeGenOceanAC(0).setColor(112).setBiomeName("Ocean").setMinMaxHeight(-1.0F, 0.4F);
+		
+		EntityRegistry.addSpawn(EntityFish.class, 50, 8, 16, ambientWater, new BiomeGenBase[]{
+			oceanAC});
+		//EntityRegistry.addSpawn(EntitySquidMeaty.class, 10, 4, 10, EnumCreatureType.waterCreature);
+
+		if(this.generateDeepOcean){
+			EntityRegistry.addSpawn(EntityFish.class, 30, 8, 16, ambientWater, new BiomeGenBase[]{
+				this.deepOcean});
+		}
+		
+		((BiomeGenOceanAC) oceanAC).realignSpawnLists();
 	}
 	
 	public static Item itemSponge;

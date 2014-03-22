@@ -82,8 +82,10 @@ public class BlockGuayule extends Block {
     @Override 
     public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
     {
-        ArrayList<ItemStack> ret = super.getBlockDropped(world, x, y, z, metadata, fortune);
-
+        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+        
+        ret.add(new ItemStack(AlgaeCraftMain.blockGuayule, 1, 0));
+        
         if (metadata >= 3)
         {
         	ret.add(new ItemStack(AlgaeCraftMain.itemGuayuleBranch, 1, 0));
@@ -92,6 +94,9 @@ public class BlockGuayule extends Block {
                 if (world.rand.nextInt(8) <= metadata)
                 {
                     ret.add(new ItemStack(AlgaeCraftMain.itemGuayuleBranch, 1, 0));
+                    if(world.rand.nextInt(4) == 0){
+                    	ret.add(new ItemStack(AlgaeCraftMain.blockGuayule, 1, 0));
+                    }
                 }
             }
         }
@@ -121,7 +126,7 @@ public class BlockGuayule extends Block {
     		if(metadata < 3){
     			par1World.setBlockMetadataWithNotify(par2, par3, par4, metadata+1, 3);
     		}
-    		else if(par1World.rand.nextInt(50) == 0){
+    		else if(par1World.rand.nextInt(12) == 0){
     			if(metadata == 3 && par1World.rand.nextInt(4) == 0){
     				par1World.setBlock(par2, par3, par4, Block.deadBush.blockID, 0, 3);
     			}

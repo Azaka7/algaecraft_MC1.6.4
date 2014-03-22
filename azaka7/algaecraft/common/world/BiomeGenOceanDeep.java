@@ -1,18 +1,24 @@
 package azaka7.algaecraft.common.world;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import azaka7.algaecraft.common.AlgaeCraftMain;
 
 public class BiomeGenOceanDeep extends BiomeGenBase {
+	
+	public static List fishList;
 
 	public BiomeGenOceanDeep(int par1) {
 		super(par1);
 		this.spawnableCreatureList.clear();
+		this.fishList = new ArrayList();
 		this.topBlock = (byte) AlgaeCraftMain.blockSediment.blockID;
 		this.fillerBlock = (byte) Block.blockClay.blockID;
 		this.theBiomeDecorator.dirtGen = new WorldGenMinable(AlgaeCraftMain.blockSediment.blockID, 32);
@@ -20,6 +26,13 @@ public class BiomeGenOceanDeep extends BiomeGenBase {
         this.theBiomeDecorator.gravelAsSandGen = new WorldGenSandDeep(6, AlgaeCraftMain.blockSediment.blockID);
         this.theBiomeDecorator.goldGen = new WorldGenMinable(Block.oreGold.blockID, 12);
 	}
+	
+	@Override
+    public List getSpawnableList(EnumCreatureType type)
+    {
+    	if(type == AlgaeCraftMain.ambientWater){return this.fishList;}
+    	return super.getSpawnableList(type);
+    }
 	
 	public void decorate(World par1World, Random par2Random, int par3, int par4)
     {

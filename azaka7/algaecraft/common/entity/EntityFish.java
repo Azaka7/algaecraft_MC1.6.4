@@ -158,7 +158,16 @@ public class EntityFish extends EntityWaterMob
     
     protected boolean canTriggerWalking()
     {
-        return true;
+        return false;
+    }
+    
+    public boolean handleWaterMovement()
+    {
+    	boolean aqueous = this.inWater;
+    	this.inWater = true;
+    	boolean handled = super.handleWaterMovement();
+    	this.inWater = aqueous;
+    	return this.inWater || handled;
     }
     
     protected int getExperiencePoints(EntityPlayer par1EntityPlayer)
@@ -378,6 +387,6 @@ public class EntityFish extends EntityWaterMob
      */
     public boolean getCanSpawnHere()
     {
-        return this.posY > 32.0D && this.posY < 60.0D && super.getCanSpawnHere();
+        return this.posY > 32.0D && this.posY < 60.0D && super.getCanSpawnHere() && this.isInWater();
     }
 }

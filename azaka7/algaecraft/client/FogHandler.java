@@ -13,7 +13,7 @@ import azaka7.fogClarityAPI.IClarityDefiner;
 public class FogHandler implements IClarityDefiner {
 	
 	public static void register(){
-		FogClarityAPI.registerClarityDefiner(new FogHandler());
+		//FogClarityAPI.registerClarityDefiner(new FogHandler());
 	}
 
 	@Override

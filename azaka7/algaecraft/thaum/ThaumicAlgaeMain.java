@@ -38,7 +38,7 @@ public class ThaumicAlgaeMain {
 	
 	@EventHandler
 	public void init(FMLPreInitializationEvent event){
-		LanguageRegistry.instance().addStringLocalization("tc.aspect.abyssum", "Abyssum");
+		LanguageRegistry.instance().addStringLocalization("tc.aspect.abyssum", "Depths");
 		//System.out.println("@@@@@@@@ config location");
 		//System.out.println(event.getSuggestedConfigurationFile().getAbsolutePath());
 		//Configuration thaumcraftConfig = new Configuration(new File(event.getModConfigurationDirectory(),"Thaumcraft"));
@@ -54,8 +54,8 @@ public class ThaumicAlgaeMain {
 		FMLInterModComms.sendMessage("Thaumcraft", "harvestStandardCrop", new ItemStack(AlgaeCraftMain.blockGuayule, 1, 3));
 		FMLInterModComms.sendMessage("Thaumcraft", "harvestStandardCrop", new ItemStack(AlgaeCraftMain.blockGuayule, 1, 4));
 		
-		ThaumcraftApi.registerEntityTag("fishyfish", this.constructList(new Aspect[]{Aspect.WATER, Aspect.BEAST, Aspect.SENSES}, new int[]{1,1,1}));
-		ThaumcraftApi.registerEntityTag("lobster", this.constructList(new Aspect[]{Aspect.WATER, Aspect.BEAST, Aspect.GREED}, new int[]{1,2,1}));
+		ThaumcraftApi.registerEntityTag("fishyfish", this.constructList(new Aspect[]{Aspect.WATER, Aspect.BEAST, Aspect.SENSES}, new int[]{2,1,1}));
+		ThaumcraftApi.registerEntityTag("lobster", this.constructList(new Aspect[]{Aspect.WATER, Aspect.BEAST, Aspect.FLESH}, new int[]{2,2,2}));
 		
 		ThaumcraftApi.addSmeltingBonus(new ItemStack(AlgaeCraftMain.itemQuickLime), new ItemStack(Item.glowstone,0,0));
 		ThaumcraftApi.addSmeltingBonus(new ItemStack(AlgaeCraftMain.itemRubberBall), new ItemStack(AlgaeCraftMain.itemGuayuleBranch,0,0));
